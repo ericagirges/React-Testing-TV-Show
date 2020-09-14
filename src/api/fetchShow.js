@@ -9,12 +9,4 @@ const fetchShow = () => {
     }) // or res.data, however you want to set that up
   }
     
-   // App.js
-  useEffect(() => {
-    fetchShow
-      .then(res => {
-        // set state with the data
-      })
-  }, []);
-
   export default fetchShow;
