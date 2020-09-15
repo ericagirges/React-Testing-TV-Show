@@ -1,8 +1,12 @@
 import React from "react";
-import { screen, render } from "@testing-library/react";
+import { screen, render, waitFor } from "@testing-library/react";
 import App from "./App";
 import userEvent from "@testing-library/react";
-import { fetchShow } from "./api/fetchShow";
+import mockFetchShow from "./api/fetchShow";
+import { formatSeasons } from "./utils/formatSeasons";
+
+jest.mock("./api/fetchShow")
+jest.mock("./util/formatSeasons")
 
 const mockShowData = {
   id: 2993,
@@ -583,3 +587,23 @@ const mockShowData = {
 test("Renders without any errors", () => {
   render(<App />);
 });
+
+test("render show and episodes when API is called", async () => {
+    mockFetchShow.mockResolvedValue({ data: mockShowData });
+
+    render(<App/>);
+
+    await screen.findAllByText(/stranger things/i)
+
+    // declare dropdown
+    const dropdown = await screen.findByText(/select all by season/i);
+    userEvent.click(dropdown);
+
+    const season = await screen.findByText(/season 1/i);
+    userEvent.click(season);
+
+    const episode = await screen.findByText(/episode 1/i);
+    expect(episode[0]).toBeVisible();
+
+
+})
